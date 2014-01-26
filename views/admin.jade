@@ -2,3 +2,35 @@ extends layout
 
 block content
   p Admin!
+  each ann in announcements
+    if ann.status == "unvalidated"
+      ul
+        li
+          img(src="#{ann.image_url}")
+        li= ann.username
+        li= ann.announcement
+        li= ann.url
+  each ann in announcements
+    if ann.status == "queued"
+      ul
+        li
+          img(src="#{ann.image_url}")
+        li= ann.username
+        li= ann.announcement
+        li= ann.url
+  each ann in announcements
+    if ann.status == "visible"
+      ul
+        li
+          img(src="#{ann.image_url}")
+        li= ann.username
+        li= ann.announcement
+        li= ann.url
+  each ann in announcements
+    if ann.status == "archived"
+      ul
+        li
+          img(src="#{ann.image_url}")
+        li= ann.username
+        li= ann.announcement
+        li= ann.url
