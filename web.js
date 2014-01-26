@@ -36,6 +36,10 @@ app.use(flash());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+io.set('log level', 2);
+
 var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
@@ -88,6 +92,7 @@ app.get('/admin', function(req, res) {
       {$set: {status: req.query.to}}, 
       function(err, doc) {
         if (err) throw(err);
+        io.sockets.emit('reload', req.query.toggle + " to " + req.query.to);
       })
   };
 	announcements_db.find().toArray(function(err, docs) {
@@ -96,11 +101,14 @@ app.get('/admin', function(req, res) {
   });
 })
 
-
 mongo.Db.connect(mongoUri, function (err, db) {
 	announcements_db = db.collection('announcements');
 	console.log("Connected to MongoDB");
-	app.listen(app.get('port'), function() {
+	server.listen(app.get('port'), function() {
 	  console.log("Listening on " + app.get('port'));
-	});	
+	});
+  io.sockets.on('connection', function (sckt) {
+    console.log("socket.io connected");
+    //socket.emit('update', 'connected');
+  });
 });

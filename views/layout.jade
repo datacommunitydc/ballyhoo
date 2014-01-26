@@ -8,6 +8,13 @@ html
     script(src="http://code.jquery.com/jquery-1.10.1.min.js")
     script(src="http://code.jquery.com/jquery-migrate-1.2.1.min.js")
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js")
+    script(src="/socket.io/socket.io.js")
+    script.
+      var socket = io.connect('http://localhost');
+      socket.on('reload', function (data) {
+        console.log("reloading per server: " + data);
+        window.location.reload();
+      });
 
   body
     nav.navbar.navbar-default.navbar-fixed-top(role="navigation")
