@@ -52,8 +52,27 @@ app.get('/validate', function(req, res) {
   // if we have a valid id, validate it, then redirect to / with a success message
   // if we don't have a valid id, redirect to / with an error message
   if (req.query.id) {
-    console.log("queueing " + req.query.id);
-    req.flash('info', 'Announcement queued successfully!');
+    var idstr = mongo.ObjectID.createFromHexString(req.query.id);
+    announcements_db.findOne({ _id: idstr }, function(err, doc) {
+      if (err || doc == null) {
+        req.flash('warning', 'Invalid validation ID!');
+        console.log("invalid validation id!");
+      } else {
+        console.log("queueing " + idstr);
+        announcements_db.update({ _id: idstr }, 
+          {$set: {status: "queued"}}, 
+          function(err, doc) {
+            if (err || doc == null) {
+              req.flash('warning', 'Announce queueing failed?!');
+              console.log("failed! " + err + doc);
+            } else {
+              req.flash('info', 'Announcement queued successfully!');
+              console.log("succeeded")
+            }
+          }
+        );
+      }
+    });
   } else {
     console.log("warning");
     req.flash('warning', 'Invalid validation request?!');
