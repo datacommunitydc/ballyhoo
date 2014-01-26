@@ -14,14 +14,16 @@ block content
                   .col-md-3
                     if ann.status == "visible"
                       - var ann_class = 'visible'
+                      - var toggle_to = 'queued'
                     else
                       - var ann_class = 'queued'
+                      - var toggle_to = 'visible'
                     div(class=ann_class, class='announcement')
                       img.admin(src="#{ann.image_url}")
                       p= ann.username
                       p= ann.announcement
                       p= ann.url
-                      a(href="/admin?toggle=#{ann._id}")
+                      a(href="/admin?toggle=#{ann._id}&to=#{toggle_to}")
                         span.boxlink
 
       .col-med-3

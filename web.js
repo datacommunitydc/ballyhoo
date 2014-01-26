@@ -36,12 +36,23 @@ var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
   announcements_db.find().toArray(function(err, docs) {
+    // TODO: put the filter in find(), where it belongs
     res.render('index', { announcements: docs.filter(function(ann) { return ann.status == 'visible'; }) });
   });
   
 });
 
 app.get('/admin', function(req, res) {
+  // first, if we have a toggle, do that
+  if (req.query.toggle) {
+    console.log("Toggling element " + req.query.toggle + " to " + req.query.to);
+    announcements_db.update({_id: mongo.ObjectID.createFromHexString(req.query.toggle)}, 
+      {$set: {status: req.query.to}},
+      function(err, doc) {
+        if (err) throw(err);
+        console.log(doc);
+      })
+  }
 	announcements_db.find().toArray(function(err, docs) {
     res.render('admin', { announcements: docs.filter(function(ann) { 
       return ['queued', 'visible'].indexOf(ann.status) > -1; }) });
