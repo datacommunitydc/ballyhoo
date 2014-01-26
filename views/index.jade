@@ -1,6 +1,17 @@
 extends layout
 
 block content
+  -if (messages != '')
+    div.alert.alert-success.alert-dismissable
+      button.close(type="button", data-dismiss="alert", aria-hidden="true")
+        &times;
+      p= messages
+  -if (warnings != '')
+    div.alert.alert-danger.alert-dismissable
+      button.close(type="button", data-dismiss="alert", aria-hidden="true")
+        &times;
+      p= warnings
+
   .container
     .row
       - var i = -3;
