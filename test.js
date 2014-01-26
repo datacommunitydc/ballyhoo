@@ -10,6 +10,7 @@ var test_docs = [
 	{
 		image_url: "http://photos4.meetupstatic.com/photos/member/5/3/f/4/member_57681492.jpeg",
 		username: "Harlan Harris",
+		userurl: "http://www.meetup.com/Data-Science-DC/members/482161/",
 		email: "harlan@harris.name",
 		url: "http://sentrana.com",
 		announcement: "Sentrana is hiring software engineers",
@@ -20,6 +21,7 @@ var test_docs = [
 	{
 		image_url: "http://photos4.meetupstatic.com/photos/member/5/3/f/4/member_57681492.jpeg",
 		username: "Harlan Harris",
+		userurl: "http://www.meetup.com/Data-Science-DC/members/482161/",
 		email: "harlan@harris.name",
 		url: "http://sentrana.com",
 		announcement: "Sentrana is hiring bunnies",
@@ -30,6 +32,7 @@ var test_docs = [
 	{
 		image_url: "http://photos4.meetupstatic.com/photos/member/5/3/f/4/member_57681492.jpeg",
 		username: "Harlan Harris",
+		userurl: "http://www.meetup.com/Data-Science-DC/members/482161/",
 		email: "harlan@harris.name",
 		url: "http://sentrana.com",
 		announcement: "Sentrana is hiring monkeys",
@@ -40,6 +43,7 @@ var test_docs = [
 	{
 		image_url: "http://photos4.meetupstatic.com/photos/member/5/3/f/4/member_57681492.jpeg",
 		username: "Harlan Harris",
+		userurl: "http://www.meetup.com/Data-Science-DC/members/482161/",
 		email: "harlan@harris.name",
 		url: "http://sentrana.com",
 		announcement: "Sentrana is hiring armadillos",

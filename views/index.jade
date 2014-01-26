@@ -1,10 +1,19 @@
 extends layout
 
 block content
-  each ann in announcements
-    ul
-      li
-        img(src="#{ann.image_url}")
-      li= ann.username
-      li= ann.announcement
-      li= ann.url
+  .container
+    .row
+      - var i = -3;
+          while i <= announcements.length
+            - i += 3;
+            .row
+              each ann in announcements.slice(i, i+3)
+                .col-md-4
+                  div(class='announcement')
+                    a(href="#{ann.userurl}")
+                      img.admin(src="#{ann.image_url}")
+                      p= ann.username
+                    p= ann.announcement
+                    a(href="#{ann.url}")
+                      p= ann.url
+
