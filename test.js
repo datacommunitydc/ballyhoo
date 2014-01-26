@@ -33,14 +33,25 @@ var test_docs = [
 		email: "harlan@harris.name",
 		url: "http://sentrana.com",
 		announcement: "Sentrana is hiring monkeys",
-		status: "queued",
+		status: "visible",
 		submitted: 1390696305,
 		validation_key: "valkey3"
+	},
+	{
+		image_url: "http://photos4.meetupstatic.com/photos/member/5/3/f/4/member_57681492.jpeg",
+		username: "Harlan Harris",
+		email: "harlan@harris.name",
+		url: "http://sentrana.com",
+		announcement: "Sentrana is hiring armadillos",
+		status: "archived",
+		submitted: 1390696306,
+		validation_key: "valkey4"
 	}
 
 ];
 
 mongo.Db.connect(mongoUri, function (err, db) {
+	if (err) throw err;
 	db.dropCollection('announcements', function(er,rs) {
 		var collection = db.collection('announcements');
 		collection.insert(test_docs, function(er,rs) {

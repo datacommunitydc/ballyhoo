@@ -1,4 +1,11 @@
 extends layout
 
 block content
-  p asdf
+  each ann in announcements
+    if ann.status == "visible"
+      ul
+        li
+          img(src="#{ann.image_url}")
+        li= ann.username
+        li= ann.announcement
+        li= ann.url

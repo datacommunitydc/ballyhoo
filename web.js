@@ -32,15 +32,26 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
-  res.render('index');
+  announcements_db.find().toArray(function(err, docs) {
+    res.render('index', { announcements: docs });
+  });
+  
 });
 
 app.get('/admin', function(req, res) {
-	res.render('admin');
+	announcements_db.find().toArray(function(err, docs) {
+    res.render('admin', { announcements: docs });
+  });
 })
 
-app.listen(app.get('port'), function() {
-  console.log("Listening on " + app.get('port'));
+
+mongo.Db.connect(mongoUri, function (err, db) {
+	announcements_db = db.collection('announcements');
+	console.log("Connected to MongoDB");
+	app.listen(app.get('port'), function() {
+	  console.log("Listening on " + app.get('port'));
+	});	
 });
