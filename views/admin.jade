@@ -1,36 +1,29 @@
 extends layout
 
+// two cols. left is an array of announcement cards, toggleable state.
+// right is a set of buttons: Visible -> Queued, Queued -> Visible, Visible -> Archived, Delete Archived
 block content
-  p Admin!
-  each ann in announcements
-    if ann.status == "unvalidated"
-      ul
-        li
-          img(src="#{ann.image_url}")
-        li= ann.username
-        li= ann.announcement
-        li= ann.url
-  each ann in announcements
-    if ann.status == "queued"
-      ul
-        li
-          img(src="#{ann.image_url}")
-        li= ann.username
-        li= ann.announcement
-        li= ann.url
-  each ann in announcements
-    if ann.status == "visible"
-      ul
-        li
-          img(src="#{ann.image_url}")
-        li= ann.username
-        li= ann.announcement
-        li= ann.url
-  each ann in announcements
-    if ann.status == "archived"
-      ul
-        li
-          img(src="#{ann.image_url}")
-        li= ann.username
-        li= ann.announcement
-        li= ann.url
+  .container
+    .row
+      .col-med-9
+        - var i = -3;
+            while i <= announcements.length
+              - i += 3;
+              .row
+                each ann in announcements.slice(i, i+3)
+                  .col-md-3
+                    if ann.status == "visible"
+                      - var ann_class = 'visible'
+                    else
+                      - var ann_class = 'queued'
+                    div(class=ann_class, class='announcement')
+                      img.admin(src="#{ann.image_url}")
+                      p= ann.username
+                      p= ann.announcement
+                      p= ann.url
+                      a(href="/admin?toggle=#{ann._id}")
+                        span.boxlink
+
+      .col-med-3
+        | stuff will go here
+  

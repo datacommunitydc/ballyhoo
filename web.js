@@ -36,14 +36,15 @@ var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
   announcements_db.find().toArray(function(err, docs) {
-    res.render('index', { announcements: docs });
+    res.render('index', { announcements: docs.filter(function(ann) { return ann.status == 'visible'; }) });
   });
   
 });
 
 app.get('/admin', function(req, res) {
 	announcements_db.find().toArray(function(err, docs) {
-    res.render('admin', { announcements: docs });
+    res.render('admin', { announcements: docs.filter(function(ann) { 
+      return ['queued', 'visible'].indexOf(ann.status) > -1; }) });
   });
 })
 
