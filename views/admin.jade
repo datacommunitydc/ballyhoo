@@ -4,8 +4,8 @@ extends layout
 // right is a set of buttons: Visible -> Queued, Queued -> Visible, Visible -> Archived, Delete Archived
 block content
   .container
-    .row
-      .col-med-9
+    .row#contentrow
+      .col-sm-9
         - var i = -3;
             while i <= announcements.length
               - i += 3;
@@ -19,13 +19,17 @@ block content
                       - var ann_class = 'queued'
                       - var toggle_to = 'visible'
                     div(class=ann_class, class='announcement')
-                      img.admin(src="#{ann.image_url}")
-                      p= ann.username
-                      p= ann.announcement
-                      p= ann.url
+                      img.admin.ann_comps(src="#{ann.image_url}")
+                      p.ann_comps= ann.username
+                      p.ann_comps= ann.announcement
+                      p.ann_comps= ann.url
                       a(href="/admin?toggle=#{ann._id}&to=#{toggle_to}")
                         span.boxlink
 
-      .col-med-3
-        | stuff will go here
+      .col-sm-3.sidebar
+        button.btn.btn-default.btn-lg.btn-block(type="button") Queued -> Visible
+        button.btn.btn-default.btn-lg.btn-block(type="button") Visible -> Queued
+        button.btn.btn-default.btn-lg.btn-block(type="button") Visible -> Archived
+        button.btn.btn-default.btn-lg.btn-block(type="button") Delete Archived
+                      
   

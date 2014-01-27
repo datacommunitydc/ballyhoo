@@ -1,6 +1,13 @@
+html {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
 body {
   padding: 70px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100%;
 }
 
 a {
@@ -14,9 +21,15 @@ img.admin {
 
 .announcement {
 	padding: 10px;
-	border: 1px;
+	border: 2px;
 	border-style: solid;
+  border-color: gray;
 	position: relative;
+}
+
+.ann_comps {
+  display: table;
+  margin: 0 auto;
 }
 
 .queued {
@@ -40,4 +53,17 @@ span.boxlink {
   /* edit: fixes overlap error in IE7/8, 
      make sure you have an empty gif */
   /* background-image: url('empty.gif'); */
+}
+
+#contentrow {
+  height: 100%;
+}
+.sidebar {
+  background-color: #eee;
+  height: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: gray;
 }

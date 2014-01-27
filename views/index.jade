@@ -22,9 +22,9 @@ block content
                 .col-md-4
                   div(class='announcement')
                     a(href="#{ann.userurl}")
-                      img.admin(src="#{ann.image_url}")
-                      p= ann.username
-                    p= ann.announcement
+                      img.admin.ann_comps(src="#{ann.image_url}")
+                      p.ann_comps= ann.username
+                    p.ann_comps= ann.announcement
                     a(href="#{ann.url}")
-                      p= ann.url
+                      p.ann_comps= ann.url
 
