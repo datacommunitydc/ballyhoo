@@ -51,6 +51,10 @@ app.get('/', function(req, res) {
   
 });
 
+app.get('/about', function(req, res) {
+  res.render('about');
+});
+
 app.get('/validate', function(req, res) {
   // if we don't have an id, redirect to / with an error message
   // if we have a valid id, validate it, then redirect to / with a success message
