@@ -11,6 +11,9 @@ var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
   'mongodb://localhost/mydb';
 
+var meetupName = process.env.MEETUP_NAME || "";
+var appName = "Ballyhoo" + (meetupName != "" ? (": " + meetupName) : "");
+
 // mongo.Db.connect(mongoUri, function (err, db) {
 //   db.collection('mydocs', function(er, collection) {
 //     collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
@@ -46,13 +49,15 @@ app.get('/', function(req, res) {
   announcements_db.find().toArray(function(err, docs) {
     // TODO: put the filter in find(), where it belongs
     res.render('index', { announcements: docs.filter(function(ann) { return ann.status == 'visible'; }),
-      messages: req.flash('info'), warnings: req.flash('info')});
+      messages: req.flash('info'), 
+      warnings: req.flash('info'),
+      title: appName});
   });
   
 });
 
 app.get('/about', function(req, res) {
-  res.render('about');
+  res.render('about', {title: "About Ballyhoo"});
 });
 
 app.get('/validate', function(req, res) {
@@ -101,7 +106,8 @@ app.get('/admin', function(req, res) {
   };
 	announcements_db.find().toArray(function(err, docs) {
     res.render('admin', { announcements: docs.filter(function(ann) { 
-      return ['queued', 'visible'].indexOf(ann.status) > -1; }) });
+      return ['queued', 'visible'].indexOf(ann.status) > -1; }),
+      title: "Ballyhoo Admin" });
   });
 })
 
