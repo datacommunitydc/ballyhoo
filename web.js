@@ -34,6 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
+app.use(express.bodyParser());
 app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000 }}));
 app.use(flash());
 app.use(app.router);
@@ -58,6 +59,45 @@ app.get('/', function(req, res) {
 
 app.get('/about', function(req, res) {
   res.render('about', {title: "About Ballyhoo"});
+});
+
+app.post('/email', function(req, res) {
+  // get username and announcement from the Subject
+  // get userurl from the email body
+  // get url from the email body
+  // get email from the Reply-To
+  // get image_url from the HTML body, looking for "photos/member" in a URL, replacing "thumb_" w/ "member_"
+  // for now, status is queued
+  var subj_re = /(.+) sent you a message: (.+)/;
+  var subj_match = req.body.Subject.match(subj_re);
+  //console.log(subj_match);
+  var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+  var userurl_re = new RegExp("http://www.meetup.com/[^/]+/members/\\d+", "i");
+  var photo_re = new RegExp("http://photo[^.]*.meetupstatic.com/photos/member/[^.]+.jpeg", "i");
+  if (subj_match) {
+    var annc = {
+      username: subj_match[1],
+      announcement: subj_match[2],
+      url: req.body.TextBody.match(url_re)[0],
+      email: req.body.ReplyTo,
+      userurl: req.body.TextBody.match(userurl_re)[0],
+      image_url: req.body.HtmlBody.match(photo_re)[0].replace("thumb_", "member_"),
+      status: "queued"
+    };
+    // write to the db
+    announcements_db.insert(annc, function(er,rs) {
+        if(er) throw er;
+    });
+    console.log("Inserted announcement from ", annc.username);
+  } else {
+    // forward
+    //log
+    console.log("Received email, but doesn't seem to be an announcement: ", req.body.Subject);
+  };
+  
+  // console.log(req.body.Subject);
+  // console.log(req.body.TextBody);
+  res.send(200);
 });
 
 app.get('/validate', function(req, res) {
