@@ -14,6 +14,8 @@ var mongoUri = process.env.MONGOLAB_URI ||
 var meetupName = process.env.MEETUP_NAME || "";
 var appName = "Ballyhoo" + (meetupName != "" ? (": " + meetupName) : "");
 
+var adminEmail = process.env.ADMIN_EMAIL || "harlan@datacommunitydc.org";
+
 // mongo.Db.connect(mongoUri, function (err, db) {
 //   db.collection('mydocs', function(er, collection) {
 //     collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
@@ -39,6 +41,9 @@ app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000
 app.use(flash());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+var admin_pw = process.env.ADMIN_PW || "";
+var auth = express.basicAuth('admin', admin_pw);
 
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
@@ -133,7 +138,7 @@ app.get('/validate', function(req, res) {
   res.redirect("/");
 });
 
-app.get('/admin', function(req, res) {
+app.get('/admin', auth, function(req, res) {
   // first, if we have a toggle, do that
   if (req.query.toggle) {
     console.log("Toggling element " + req.query.toggle + " to " + req.query.to);

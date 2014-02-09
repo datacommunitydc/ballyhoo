@@ -24,6 +24,13 @@ Ballyhoo is Open Source Software, and is released under an MIT License (see LICE
 Each Meetup needs to separately configure and deploy their own instance of Ballyhoo. Here's what to do:
 
 * TODO
+* Heroku
+* Mongo
+* Set up and validate a Postmark account through Heroku. You'll need an email address whose forwarding you can control. 
+* Create and validate new Meetup user called Ballyhoo, whose email address is the one whose forwarding you control. One the user is configured, change the forwarding to point to the *@inbound.postmarkapp.com  address that Postmark provides.
+* Have Postmark deliver messages sent to Ballyhoo to go to your app, `appname.herokuapp.com/email` or whatever. 
+* If you're debugging that connection, [ngrok](http://ngrok.com) is a handy way to forward the webhook
+from Postmark to a local (firewalled or localhost) instance of Ballyhoo.
 
 To contribute to Ballyhoo, please submit pull requests or issues via [our Github repository](https://github.com/datacommunitydc/ballyhoo/).
 
