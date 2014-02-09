@@ -79,6 +79,12 @@ app.post('/email', function(req, res) {
   var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
   var userurl_re = new RegExp("http://www.meetup.com/[^/]+/members/\\d+", "i");
   var photo_re = new RegExp("http://photo[^.]*.meetupstatic.com/photos/member/[^.]+.jpeg", "i");
+  var image_url;
+  if (req.body.HtmlBody.match(/noPhoto/)) {
+    image_url = "/yellout.png";
+  } else {
+    image_url = req.body.HtmlBody.match(photo_re)[0].replace("thumb_", "member_");
+  }
   if (subj_match) {
     var annc = {
       username: subj_match[1],
@@ -86,7 +92,7 @@ app.post('/email', function(req, res) {
       url: req.body.TextBody.match(url_re)[0],
       email: req.body.ReplyTo,
       userurl: req.body.TextBody.match(userurl_re)[0],
-      image_url: req.body.HtmlBody.match(photo_re)[0].replace("thumb_", "member_"),
+      image_url: image_url,
       status: "queued"
     };
     // write to the db
