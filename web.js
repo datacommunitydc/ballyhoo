@@ -52,9 +52,9 @@ io.set('log level', 2);
 var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
-  announcements_db.find().toArray(function(err, docs) {
-    // TODO: put the filter in find(), where it belongs
-    res.render('index', { announcements: docs.filter(function(ann) { return ann.status == 'visible'; }),
+  announcements_db.find({status: 'visible'},
+                        {sort: [['modified', -1]]}).toArray(function(err, docs) {
+    res.render('index', { announcements: docs,
       messages: req.flash('info'), 
       warnings: req.flash('info'),
       title: appName});
@@ -149,7 +149,7 @@ app.get('/admin', auth, function(req, res) {
   if (req.query.toggle) {
     console.log("Toggling element " + req.query.toggle + " to " + req.query.to);
     announcements_db.update({_id: mongo.ObjectID.createFromHexString(req.query.toggle)}, 
-      {$set: {status: req.query.to}}, 
+      {$set: {status: req.query.to, modified: Date.now()}}, 
       function(err, doc) {
         if (err) throw(err);
         io.sockets.emit('reload', req.query.toggle + " to " + req.query.to);
