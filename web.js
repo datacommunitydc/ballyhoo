@@ -16,12 +16,8 @@ var appName = "Ballyhoo" + (meetupName != "" ? (": " + meetupName) : "");
 
 var adminEmail = process.env.ADMIN_EMAIL || "harlan@datacommunitydc.org";
 
-// mongo.Db.connect(mongoUri, function (err, db) {
-//   db.collection('mydocs', function(er, collection) {
-//     collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
-//     });
-//   });
-// });
+var postmarkKey = process.env.POSTMARK_API_KEY || "";
+var postmark = require("postmark")(postmarkKey);
 
 var app = express();
 var flash = require('connect-flash');
@@ -102,12 +98,20 @@ app.post('/email', function(req, res) {
     console.log("Inserted announcement from ", annc.username);
   } else {
     // forward
-    //log
-    console.log("Received email, but doesn't seem to be an announcement: ", req.body.Subject);
+    postmark.send({
+        "From": req.body.From, 
+        "To": adminEmail, 
+        "Subject": req.body.Subject, 
+        "TextBody": req.body.TextBody
+      }, function(error, success) {
+          if(error) {
+              console.error("Unable to send via postmark: " + error.message);
+              return;
+          }
+          console.log("Received email, but doesn't seem to be an announcement: ", req.body.Subject);
+      });
   };
   
-  // console.log(req.body.Subject);
-  // console.log(req.body.TextBody);
   res.send(200);
 });
 
