@@ -11,9 +11,10 @@ var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
   'mongodb://localhost/mydb';
 
-var meetupName = process.env.MEETUP_NAME || "";
+var meetupName = process.env.MEETUP_NAME || "Meetup";
 var appName = "Ballyhoo" + (meetupName != "" ? (": " + meetupName) : "");
 
+// to send email, including validation email, this must be a Postmark Sender Signature
 var adminEmail = process.env.ADMIN_EMAIL || "harlan@datacommunitydc.org";
 
 var postmarkKey = process.env.POSTMARK_API_KEY || "";
@@ -21,6 +22,8 @@ var postmark = require("postmark")(postmarkKey);
 
 var app = express();
 var flash = require('connect-flash');
+
+var util = require('util');
 
 app.use(logfmt.requestLogger());
 
@@ -62,6 +65,24 @@ app.get('/about', function(req, res) {
   res.render('about', {title: "About Ballyhoo"});
 });
 
+var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\n\
+validated, a %s organizer can make it visible during the event.\n\
+\n\
+%s\n\
+%s\n\
+%s\n\
+\n\
+If that looks fine, click here:\n\
+\n\
+%s\n\
+\n\
+If it's bad, ignore this message.\n\
+\n\
+Thank you!\n\
+\n\
+Ballyhoo\n\
+";
+
 app.post('/email', function(req, res) {
   // get username and announcement from the Subject
   // get userurl from the email body
@@ -89,11 +110,28 @@ app.post('/email', function(req, res) {
       email: req.body.ReplyTo,
       userurl: req.body.TextBody.match(userurl_re)[0],
       image_url: image_url,
-      status: "queued"
+      status: "unverified"
     };
     // write to the db
     announcements_db.insert(annc, function(er,rs) {
         if(er) throw er;
+
+        // send notification email to user
+        postmark.send({
+          "From": adminEmail,
+          "To": req.body.ReplyTo,
+          "Subject": "Verify your Ballyhoo announcement: " + subj_match[2],
+          "TextBody": util.format(validate_template, meetupName, subj_match[1], subj_match[2],
+            req.body.TextBody.match(url_re)[0],
+            req.protocol + '://' + req.host + "/validate?id=" + rs[0]._id
+            )
+          }, function(error, success) {
+            if(error) {
+                console.error("Unable to send validate message: " + error.message);
+                return;
+            }
+            console.log("Sent validate message.");
+        })
     });
     console.log("Inserted announcement from ", annc.username);
   } else {
