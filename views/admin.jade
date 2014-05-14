@@ -27,9 +27,10 @@ block content
                         span.boxlink
 
       .col-sm-3.sidebar
-        button.btn.btn-default.btn-lg.btn-block(type="button") Queued -> Visible
-        button.btn.btn-default.btn-lg.btn-block(type="button") Visible -> Queued
-        button.btn.btn-default.btn-lg.btn-block(type="button") Visible -> Archived
-        button.btn.btn-default.btn-lg.btn-block(type="button") Delete Archived
+        button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=queued&to=visible'") Queued -> Visible
+        button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=visible&to=queued'") Visible -> Queued
+        button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=visible&to=archived'") Visible -> Archived
+        button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=archived&to=queued'") Archived -> Queued
+        button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=archived&to=deleted'") Delete Archived
                       
   

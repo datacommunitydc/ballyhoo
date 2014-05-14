@@ -204,12 +204,34 @@ app.get('/admin', auth, function(req, res) {
         io.sockets.emit('reload', req.query.toggle + " to " + req.query.to);
       })
   };
+  // TODO: move the filter into the find(), and use a regex instead of indexOf
 	announcements_db.find().toArray(function(err, docs) {
     res.render('admin', { announcements: docs.filter(function(ann) { 
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
       title: "Ballyhoo Admin" });
   });
-})
+});
+
+app.get('/adminbtn', auth, function(req, res) {
+  // use params to decide what to do, then always redirect back to /admin
+  if (req.query.from.match("unverified|queued|visible|archived") && 
+      req.query.to.match("queued|visible|archived|deleted")) {
+    console.log("Moving all " + req.query.from + " announcements to " + req.query.to);
+    // "deleted" isn't actually deleted, we just don't allow you to move anything from it
+    announcements_db.update({status: req.query.from},
+      {$set: {status: req.query.to, modified: Date.now()}},
+      {multi: true},
+      function(er, ct) {
+        if (er) throw(er);
+        console.log(ct + " announcements moved");
+        io.sockets.emit('reload', req.query.from + " to " + req.query.to);
+        res.redirect("/admin");
+      }
+    );
+  } else {
+    console.warning("Unexpected query ignored: " + req.query)
+  }
+});
 
 mongo.Db.connect(mongoUri, function (err, db) {
 	announcements_db = db.collection('announcements');
