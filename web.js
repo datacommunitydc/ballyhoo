@@ -65,9 +65,10 @@ app.get('/about', function(req, res) {
   res.render('about', {title: "About Ballyhoo"});
 });
 
-var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\n\
-validated, a %s organizer can make it visible during the event.\n\
+var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\
+validated, a %s organizer can make it visible during the event. This is what it'll look like:\n\
 \n\
+[Your Photo Here]\n\
 %s\n\
 %s\n\
 %s\n\
@@ -108,7 +109,7 @@ app.post('/email', function(req, res) {
     // extract any URL from before the end of the message; or "" if none provided
     var url_match = req.body.TextBody.match(end_message_re)[0].match(url_re);
     var url_str = url_match ? url_match[0] : "";
-    
+
     var annc = {
       username: subj_match[1],
       announcement: subj_match[2],

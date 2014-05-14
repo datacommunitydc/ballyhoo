@@ -23,20 +23,26 @@ Ballyhoo is Open Source Software, and is released under an MIT License (see LICE
 
 Each Meetup needs to separately configure and deploy their own instance of Ballyhoo. Here's what to do:
 
-* TODO
-* Heroku
-* Mongo
-* Set up and validate a Postmark account through Heroku. You'll need an email address whose forwarding you can control. 
-* Create and validate new Meetup user called Ballyhoo, whose email address is the one whose forwarding you control. One the user is configured, change the forwarding to point to the *@inbound.postmarkapp.com  address that Postmark provides.
-* Have Postmark deliver messages sent to Ballyhoo to go to your app, `appname.herokuapp.com/email` or whatever. 
+* Deploy the app to Heroku. You'll need to define the following [environment variables](https://devcenter.heroku.com/articles/config-vars): MONGOLAB_URI, MEETUP_NAME, POSTMARK_API_KEY, POSTMARK_SMTP_SERVER, POSTMARK_INBOUND_ADDRESS, ADMIN_EMAIL, ADMIN_PW (empty if not specified). The use of a .env file and `heroku config:push` may be helpful.
+* Set up a [MongoLab Add-on](https://addons.heroku.com/mongolab) for your Heroku instance. The free Sandbox is plenty.
+* Set up and validate a [Postmark Add-on](https://addons.heroku.com/postmark) for your Heroku instance, so you can send and receive email. You'll want to create a Sender Signature email address whose forwarding you can control. 
+* Create and validate a new Meetup user called Ballyhoo, whose email address is the one whose forwarding you control. Once the user is configured, change the forwarding to point to the _bixhexstring@inbound.postmarkapp.com_ address that Postmark provides.
+* Have Postmark deliver messages sent to Ballyhoo to go to your app: `appname.herokuapp.com/email` . 
 * If you're debugging that connection, [ngrok](http://ngrok.com) is a handy way to forward the webhook
 from Postmark to a local (firewalled or localhost) instance of Ballyhoo.
+* That should be it! The admin login is `admin`, with the password you specified as an environment variable.
 
-To contribute to Ballyhoo, please submit pull requests or issues via [our Github repository](https://github.com/datacommunitydc/ballyhoo/).
+To contribute to Ballyhoo, please submit pull requests or issues via [our Github repository](https://github.com/datacommunitydc/ballyhoo/). There's plenty of work to be done!
 
 Technology
 ==========
 
 Ballyhood is written in Node.js/Javascript. Useful packages include:
 
-* TODO (list useful packages here)
+* express -- web services
+* jade -- web page templating
+* logfmt -- web server logging
+* mongodb -- nosql database library
+* connect-flash -- flash/warning messages to the user
+* socket.io -- websockets library for triggered reloads
+* postmark -- library to make sending email with Postmark easier
