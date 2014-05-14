@@ -93,6 +93,7 @@ app.post('/email', function(req, res) {
   var subj_re = /(.+) sent you a message: (.+)/;
   var subj_match = req.body.Subject.match(subj_re);
   //console.log(subj_match);
+  var end_message_re = /.*Member since/;
   var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
   var userurl_re = new RegExp("http://www.meetup.com/[^/]+/members/\\d+", "i");
   var photo_re = new RegExp("http://photo[^.]*.meetupstatic.com/photos/member/[^.]+.jpeg", "i");
@@ -103,10 +104,15 @@ app.post('/email', function(req, res) {
     image_url = req.body.HtmlBody.match(photo_re)[0].replace("thumb_", "member_");
   }
   if (subj_match) {
+
+    // extract any URL from before the end of the message; or "" if none provided
+    var url_match = req.body.TextBody.match(end_message_re)[0].match(url_re);
+    var url_str = url_match ? url_match[0] : "";
+    
     var annc = {
       username: subj_match[1],
       announcement: subj_match[2],
-      url: req.body.TextBody.match(url_re)[0],
+      url: url_str,
       email: req.body.ReplyTo,
       userurl: req.body.TextBody.match(userurl_re)[0],
       image_url: image_url,
@@ -121,8 +127,8 @@ app.post('/email', function(req, res) {
           "From": adminEmail,
           "To": req.body.ReplyTo,
           "Subject": "Verify your Ballyhoo announcement: " + subj_match[2],
-          "TextBody": util.format(validate_template, meetupName, subj_match[1], subj_match[2],
-            req.body.TextBody.match(url_re)[0],
+          "TextBody": util.format(validate_template, meetupName, 
+            subj_match[1], subj_match[2], url_str,
             req.protocol + '://' + req.host + "/validate?id=" + rs[0]._id
             )
           }, function(error, success) {
