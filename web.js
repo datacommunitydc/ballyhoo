@@ -90,21 +90,17 @@ app.post('/email', function(req, res) {
   // get url from the email body
   // get email from the Reply-To
   // get image_url from the HTML body, looking for "photos/member" in a URL, replacing "thumb_" w/ "member_"
-  // for now, status is queued
+  
   var subj_re = /(.+) sent you a message: (.+)/;
-  var subj_match = req.body.Subject.match(subj_re);
-  //console.log(subj_match);
-  var end_message_re = /.*Member since/;
+  var end_message_re = /[\s\S]*Member since/; // match all lines up to here; .* doesn't cross lines!
   var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
   var userurl_re = new RegExp("http://www.meetup.com/[^/]+/members/\\d+", "i");
   var photo_re = new RegExp("http://photo[^.]*.meetupstatic.com/photos/member/[^.]+.jpeg", "i");
-  var image_url;
-  if (req.body.HtmlBody.match(/noPhoto/)) {
-    image_url = "/yellout.png";
-  } else {
-    image_url = req.body.HtmlBody.match(photo_re)[0].replace("thumb_", "member_");
-  }
+  
+  var subj_match = req.body.Subject.match(subj_re);
   if (subj_match) {
+    var photo_match = req.body.HtmlBody.match(photo_re);
+    var image_url = photo_match ? photo_match[0].replace("thumb_", "member_") : "/yellout.png";
 
     // extract any URL from before the end of the message; or "" if none provided
     var url_match = req.body.TextBody.match(end_message_re)[0].match(url_re);
