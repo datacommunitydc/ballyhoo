@@ -47,6 +47,9 @@ var auth = express.basicAuth('admin', admin_pw);
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 io.set('log level', 2);
+io.server.removeListener('request', io.server.listeners('request')[0]); // workaround issue
+// http://stackoverflow.com/questions/6736706/socket-io-access-control-allow-origin-error-from-remote-site
+// https://github.com/LearnBoost/socket.io/issues/1046
 
 var announcements_db; // for scoping?
 
@@ -90,7 +93,7 @@ app.post('/email', function(req, res) {
   // get url from the email body
   // get email from the Reply-To
   // get image_url from the HTML body, looking for "photos/member" in a URL, replacing "thumb_" w/ "member_"
-  
+
   var subj_re = /(.+) sent you a message: (.+)/;
   var end_message_re = /[\s\S]*Member since/; // match all lines up to here; .* doesn't cross lines!
   var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
