@@ -10,7 +10,7 @@ html
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js")
     script(src="/socket.io/socket.io.js")
     script.
-      var socket = io.connect(host);
+      var socket = io.connect(#{host});
       socket.on('reload', function (data) {
         console.log("reloading per server: " + data);
         window.location.reload();
