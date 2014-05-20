@@ -45,9 +45,8 @@ var admin_pw = process.env.ADMIN_PW || "";
 var auth = express.basicAuth('admin', admin_pw);
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server, { origins: '*:*' });
 io.set('log level', 2);
-io.server.removeListener('request', io.server.listeners('request')[0]); // workaround issue
 // http://stackoverflow.com/questions/6736706/socket-io-access-control-allow-origin-error-from-remote-site
 // https://github.com/LearnBoost/socket.io/issues/1046
 
