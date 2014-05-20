@@ -45,10 +45,8 @@ var admin_pw = process.env.ADMIN_PW || "";
 var auth = express.basicAuth('admin', admin_pw);
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server, { origins: '*:*' });
+var io = require('socket.io').listen(server);
 io.set('log level', 2);
-// http://stackoverflow.com/questions/6736706/socket-io-access-control-allow-origin-error-from-remote-site
-// https://github.com/LearnBoost/socket.io/issues/1046
 
 var announcements_db; // for scoping?
 
@@ -58,6 +56,7 @@ app.get('/', function(req, res) {
     res.render('index', { announcements: docs,
       messages: req.flash('info'), 
       warnings: req.flash('info'),
+      host: req.protocol + '://' + req.host, // for socket connection
       title: appName});
   });
   
@@ -206,6 +205,7 @@ app.get('/admin', auth, function(req, res) {
 	announcements_db.find().toArray(function(err, docs) {
     res.render('admin', { announcements: docs.filter(function(ann) { 
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
+      host: req.protocol + '://' + req.host, // for socket connection
       title: "Ballyhoo Admin" });
   });
 });
