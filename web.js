@@ -1,8 +1,5 @@
 // web.js
 
-DotEnv = require('dotenv-node');
-new DotEnv();
-
 var express = require("express");
 var http = require('http');
 var path = require('path');
@@ -61,13 +58,14 @@ app.get('/', function(req, res) {
       messages: req.flash('info'), 
       warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
-      title: title});
+      title: title,
+      announceuri: announceUri});
   });
   
 });
 
 app.get('/about', function(req, res) {
-  res.render('about', {title: title, page: "about"});
+  res.render('about', {title: title, page: "about", announceuri: announceUri});
 });
 
 var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\
@@ -202,7 +200,8 @@ function render_admin(req, res) {
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
       host: req.protocol + '://' + req.host, // for socket connection
       page: "admin",
-      title: title});
+      title: title,
+      announceuri: announceUri});
   });
 }
 
