@@ -14,17 +14,21 @@ block content
 
   .container
     .row
-      - var i = -3;
-          while i <= announcements.length
-            - i += 3;
-            .row
-              each ann in announcements.slice(i, i+3)
-                .col-md-4
-                  div(class='announcement')
-                    a(href="#{ann.userurl}")
-                      img.admin.ann_comps(src="#{ann.image_url}")
-                      p.ann_comps= ann.username
-                    p.ann_comps= ann.announcement
-                    a(href="#{ann.url}")
-                      p.ann_comps= ann.url
+      -if (announcements.length < 1)
+        div(class='noannouncements')
+          h3 Watch this space for announcements!
+      -else
+        - var i = -3;
+            while i <= announcements.length
+              - i += 3;
+              .row
+                each ann in announcements.slice(i, i+3)
+                  .col-md-4
+                    div(class='announcement')
+                      a(href="#{ann.userurl}")
+                        img.admin.ann_comps(src="#{ann.image_url}")
+                        p.ann_comps= ann.username
+                      p.ann_comps= ann.announcement
+                      a(href="#{ann.url}")
+                        p.ann_comps= ann.url
 
