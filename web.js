@@ -1,4 +1,8 @@
 // web.js
+
+DotEnv = require('dotenv-node');
+new DotEnv();
+
 var express = require("express");
 var http = require('http');
 var path = require('path');
@@ -36,10 +40,10 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000 }}));
 app.use(flash());
-app.use(app.router);
+app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000 }}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(app.router);
 
 var admin_pw = process.env.ADMIN_PW || "";
 var auth = express.basicAuth('admin', admin_pw);
@@ -55,7 +59,7 @@ app.get('/', function(req, res) {
                         {sort: [['modified', -1]]}).toArray(function(err, docs) {
     res.render('index', { announcements: docs,
       messages: req.flash('info'), 
-      warnings: req.flash('info'),
+      warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
       title: appName});
   });
@@ -182,13 +186,24 @@ app.get('/validate', function(req, res) {
           }
         );
       }
+      res.redirect("/");
     });
   } else {
     console.log("warning");
     req.flash('warning', 'Invalid validation request?!');
+    res.redirect("/");
   };
-  res.redirect("/");
 });
+
+function render_admin(req, res) {
+  // TODO: move the filter into the find(), and use a regex instead of indexOf
+  announcements_db.find().toArray(function(err, docs) {
+    res.render('admin', { announcements: docs.filter(function(ann) { 
+      return ['queued', 'visible'].indexOf(ann.status) > -1; }),
+      host: req.protocol + '://' + req.host, // for socket connection
+      title: "Ballyhoo Admin" });
+  });
+}
 
 app.get('/admin', auth, function(req, res) {
   // first, if we have a toggle, do that
@@ -199,15 +214,12 @@ app.get('/admin', auth, function(req, res) {
       function(err, doc) {
         if (err) throw(err);
         io.sockets.emit('reload', req.query.toggle + " to " + req.query.to);
+        render_admin(req, res);
       })
-  };
-  // TODO: move the filter into the find(), and use a regex instead of indexOf
-	announcements_db.find().toArray(function(err, docs) {
-    res.render('admin', { announcements: docs.filter(function(ann) { 
-      return ['queued', 'visible'].indexOf(ann.status) > -1; }),
-      host: req.protocol + '://' + req.host, // for socket connection
-      title: "Ballyhoo Admin" });
-  });
+  } else {
+    render_admin(req, res);
+  }
+  
 });
 
 app.get('/adminbtn', auth, function(req, res) {
