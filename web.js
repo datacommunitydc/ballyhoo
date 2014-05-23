@@ -16,6 +16,7 @@ var mongoUri = process.env.MONGOLAB_URI || "MONGOLAB_URI undefined";
 var meetupName = process.env.MEETUP_NAME || "MEETUP_NAME undefined";
 var announceUri = process.env.MAKE_ANNOUNCEMENT_URI || "MAKE_ANNOUNCEMENT_URI undefined";
 var appName = "Ballyhoo";
+var title = appName + ": " + meetupName;
 
 // to send email, including validation email, this must be a Postmark Sender Signature
 var adminEmail = process.env.ADMIN_EMAIL || "ADMIN_EMAIL undefined";
@@ -60,13 +61,13 @@ app.get('/', function(req, res) {
       messages: req.flash('info'), 
       warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
-      title: appName});
+      title: title});
   });
   
 });
 
 app.get('/about', function(req, res) {
-  res.render('about', {title: "About Ballyhoo"});
+  res.render('about', {title: title, page: "about"});
 });
 
 var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\
@@ -200,7 +201,8 @@ function render_admin(req, res) {
     res.render('admin', { announcements: docs.filter(function(ann) { 
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
       host: req.protocol + '://' + req.host, // for socket connection
-      title: "Ballyhoo Admin" });
+      page: "admin",
+      title: title});
   });
 }
 

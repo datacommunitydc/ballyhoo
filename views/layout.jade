@@ -27,9 +27,9 @@ html
         a.navbar-brand(href="/")= title
       div.collapse.navbar-collapse.navbar-right#bs-example-navbar-collapse-1
         ul.nav.navbar-nav
-          li
+          li(class=page === "admin" ? "active" : undefined)
             a(href="/admin") Admin
-          li
+          li(class=page === "about" ? "active" : undefined)
             a(href="/about") About
 
     block content
