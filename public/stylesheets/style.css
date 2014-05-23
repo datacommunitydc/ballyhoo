@@ -19,6 +19,10 @@ img.admin {
 	max-height: 50%;
 }
 
+.queuehidden {
+  display: none;
+}
+
 .announcement {
 	padding: 10px;
 	border: 2px;

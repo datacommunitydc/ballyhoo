@@ -5,6 +5,9 @@ extends layout
 block content
   .container
     .row#contentrow
+      div.queuehidden
+          a(href="/admin")
+            p New announcements available -- reload!
       .col-sm-9
         - var i = -3;
             while i <= announcements.length
@@ -27,10 +30,12 @@ block content
                         span.boxlink
 
       .col-sm-3.sidebar
+        p Change all:
         button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=queued&to=visible'") Queued -> Visible
         button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=visible&to=queued'") Visible -> Queued
         button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=visible&to=archived'") Visible -> Archived
         button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=archived&to=queued'") Archived -> Queued
         button.btn.btn-default.btn-lg.btn-block(type="button", onclick="location.href='/adminbtn?from=archived&to=deleted'") Delete Archived
+        
                       
   

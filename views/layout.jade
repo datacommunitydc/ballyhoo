@@ -15,6 +15,11 @@ html
         console.log("reloading per server: " + data);
         window.location.reload();
       });
+      socket.on('queued', function(data) {
+        console.log("unhiding queued message per server: " + data);
+        var objs = document.getElementsByClassName("queuehidden");
+        objs.map(function(obj) { obj.style.display = 'block'; });
+      });
 
   body
     nav.navbar.navbar-default.navbar-fixed-top(role="navigation")

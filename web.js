@@ -179,6 +179,7 @@ app.get('/validate', function(req, res) {
               console.log("failed! " + err + doc);
             } else {
               req.flash('info', 'Announcement queued successfully!');
+              io.sockets.emit('queued', req.query.id + " to queued");
               console.log("succeeded")
             }
           }
