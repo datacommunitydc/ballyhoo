@@ -8,16 +8,16 @@ body {
   padding: 70px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
+  zbackground-color: #f8f8f8;
+
 }
 
 a {
   color: #000000;
 }
 
-img.admin {
-	max-width: 50%;
-	max-height: 50%;
-}
+
+
 
 .queuehidden {
   display: none;
@@ -29,11 +29,98 @@ img.admin {
 	border-style: solid;
   border-color: gray;
 	position: relative;
+
+  width: 370px;
+  height:236px;
+
+  margin-top:15px;
+  box-shadow: 1px 1px gray;
+
+  float:left;
+  margin-right: 10px;
+  margin-left: 10px;
+
+  background-color: white;
+}
+
+.announcement img {
+  float:left;
+  zwidth: auto;
+
+  width:35%;
+  height:auto;
+
+  zmax-width: 35%;
+  zmax-height: 100%;
+  zheight:60%;
+  zheight:139px;
+
+  position: absolute;
+  zbottom:17.5%;
+  zbottom:18%;
+  top:25%;
+  padding:1%;
+
+}
+
+.announcement .speaker_message {
+  zbackground-color: #428bca;
+  zbackground-color: white;
+
+  display: block;
+
+  zborder: solid 1px  black;
+  color:#777;
+
+  position: absolute;
+  bottom:17%;
+  right:2%;
+  zheight:60%;
+  height:139px;
+
+  text-align: center;
+  vertical-align: center;
+
+  zborder-left: solid 1px #428bca;
+
+  margin-bottom: 0px;
+  padding:3%;
 }
 
 .ann_comps {
   display: table;
-  margin: 0 auto;
+  zmargin: 0 auto;
+  float:right;
+  width:55%;
+}
+
+.announcement .speaker_name  {
+  zfloat: left;
+  font-size: 200%;
+  margin:0px;
+  width: 100%;
+  zbackground-color: blue;
+  zcolor:white;
+  text-align: center;
+
+  border-bottom: solid 1px #428bca;
+}
+
+.announcement .speaker_url {
+  position: absolute;
+  bottom: 1%;
+  
+  width:100%;
+  text-align: center;
+  font-size: 130%;
+  border-top: solid 1px #428bca;
+}
+
+
+
+.announcement img {
+  zborder: solid 0px white;
+  border-radius: 5px;
 }
 
 .queued {
