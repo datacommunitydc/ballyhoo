@@ -34,6 +34,14 @@ img.admin {
   text-overflow: ellipsis; 
 }
 
+.speaker_url_div {
+  padding-left: 5px;
+  padding-right: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
 .ann_comps {
   display: table;
   margin: 0 auto;

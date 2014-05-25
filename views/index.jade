@@ -27,8 +27,9 @@ block content
                     div(class='announcement')
                       a(href="#{ann.userurl}")
                         img.admin.ann_comps(src="#{ann.image_url}")
-                        p.ann_comps= ann.username
-                      p.ann_comps= ann.announcement
+                        p.ann_comps.speaker_name= ann.username
+                      p.ann_comps.speaker_message= ann.announcement
                       a(href="#{ann.url}")
-                        p.ann_comps= ann.url
+                        div(class='speaker_url_div')
+                          p.ann_comps.speaker_url= ann.url
 
