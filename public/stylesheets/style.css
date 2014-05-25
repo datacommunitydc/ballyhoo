@@ -29,6 +29,9 @@ img.admin {
 	border-style: solid;
   border-color: gray;
 	position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
 
 .ann_comps {
