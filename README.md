@@ -19,7 +19,7 @@ opportunities, then disappear before actual connections are made? Then Ballyhoo 
 
 Ballyhoo design and coding is led by Harlan Harris. 
 
-Ballyhoo is Open Source Software, and is released under an MIT License (see LICENSE).
+Ballyhoo is Open Source Software, and is released under an MIT License (see LICENSE). The Ballyhoo logo is from the public domain, via [openclipart](http://openclipart.org/detail/75487/yell-out-by-rgesthuizen).
 
 Each Meetup needs to separately configure and deploy their own instance of Ballyhoo. Here's what to do:
 
