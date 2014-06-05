@@ -30,25 +30,31 @@ a {
   border-color: gray;
 	position: relative;
 
-  width: 370px;
+  zmax-width: 370px;
   height:236px;
 
   margin-top:15px;
   box-shadow: 1px 1px gray;
-
-  float:left;
+overflow: hidden; 
+  zfloat:left;
   margin-right: 10px;
   margin-left: 10px;
+
 
   background-color: white;
 }
 
+/*.announcement a {
+  text-overflow: ellipsis;
+}*/
 .announcement img {
   float:left;
   zwidth: auto;
 
-  width:35%;
-  height:auto;
+  zmax-width:35%;
+  width: auto;
+  zheight:auto;
+  height:55%;
 
   zmax-width: 35%;
   zmax-height: 100%;
@@ -57,7 +63,7 @@ a {
 
   position: absolute;
   zbottom:17.5%;
-  zbottom:18%;
+  bottom:18%;
   top:25%;
   padding:1%;
 
@@ -77,14 +83,15 @@ a {
   right:2%;
   zheight:60%;
   height:139px;
-
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: center;
   vertical-align: center;
-
   zborder-left: solid 1px #428bca;
 
   margin-bottom: 0px;
   padding:3%;
+  padding-left: 15px;
 }
 
 .ann_comps {
@@ -102,18 +109,23 @@ a {
   zbackground-color: blue;
   zcolor:white;
   text-align: center;
-
+ white-space: nowrap;
   border-bottom: solid 1px #428bca;
 }
 
 .announcement .speaker_url {
   position: absolute;
   bottom: 1%;
+  max-height: 25px;
   
-  width:100%;
+  overflow: hidden;
+  width:95%;
+  display: block;
   text-align: center;
   font-size: 130%;
   border-top: solid 1px #428bca;
+  white-space: nowrap;
+
 }
 
 
