@@ -30,7 +30,7 @@ a {
   border-color: gray;
 	position: relative;
 
-  zmax-width: 370px;
+  max-width: 370px;
   height:236px;
 
   margin-top:15px;
@@ -85,7 +85,7 @@ overflow: hidden;
   height:139px;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
+  text-align: left;
   vertical-align: center;
   zborder-left: solid 1px #428bca;
 
