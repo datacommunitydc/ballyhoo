@@ -20,6 +20,18 @@
   }
 }
 
+.announcement.queuehidden {
+  display: none;
+}
+
+.announcement.queued {
+  background-color: #ddd;
+}
+
+.announcement.visible {
+  background-color: #ffc;
+}
+
 /*.announcement a {
   text-overflow: ellipsis;
 }*/
