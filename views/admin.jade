@@ -3,7 +3,7 @@ extends layout
 // two cols. left is an array of announcement cards, toggleable state.
 // right is a set of buttons: Visible -> Queued, Queued -> Visible, Visible -> Archived, Delete Archived
 block content
-  .container
+  .container.container--admin
     .row#contentrow
       div.queuehidden
           a(href="/admin")

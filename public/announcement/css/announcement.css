@@ -73,6 +73,15 @@
 .ann_comps {
   display: table;
   zmargin: 0 auto;
+  float:right;
+  width:55%;
+}
+
+.container--admin .ann_comps {
+  width: inherit;
+  z-index: 1;
+  position: relative;
+  float: inherit;
 }
 .ann_comps.url {
   word-break: break-all;
@@ -129,5 +138,14 @@
   right: 5%;
   top: 2%;
   position: absolute;
+  z-index: 0;
+  opacity: 0.75;
+}
+
+.container--admin .announcement:hover .profile-circular {
+  opacity: 1;
+}
+.container--admin .announcement:hover .ann_comps {
+  text-shadow: 0 0px 5px white;
 }
 
