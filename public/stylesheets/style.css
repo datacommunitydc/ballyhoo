@@ -31,6 +31,10 @@ span.boxlink {
   /* background-image: url('empty.gif'); */
 }
 
+.container {
+  margin-bottom: 100px;
+}
+
 #contentrow {
   height: 100%;
 }
