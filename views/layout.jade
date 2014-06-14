@@ -12,6 +12,15 @@ html
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js")
     script(src="/socket.io/socket.io.js")
     script.
+      var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.2-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
+      // Configure the Keen object with your Project ID and (optional) access keys.
+      Keen.configure({
+          projectId: "539cb50500111c538c000011",
+          writeKey: "43c17060b0265beb0a0d447b9b0318a5bf38463dd3aa702e0169704964368968b13ae4ce9d8ac33f6e21d5e3b1d7b9fbba39f9ecb0fd5abdd42f268de1437ad763befa9f59b9b2d2443eca223f5112e3d663c9175f415dcfa3c116052962d90537c95f8ca4b9944f39b111e3fa80f749", // required for sending events
+          readKey: "your_read_key"    // required for doing analysis
+      });
+    script.
       var socket = io.connect("#{host}");
       socket.on('reload', function (data) {
         console.log("reloading per server: " + data);
