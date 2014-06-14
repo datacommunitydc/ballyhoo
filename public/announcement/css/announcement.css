@@ -20,15 +20,15 @@
   }
 }
 
-.announcement.queuehidden {
+.queuehidden {
   display: none;
 }
 
-.announcement.queued {
+.queued {
   background-color: #ddd;
 }
 
-.announcement.visible {
+.visible {
   background-color: #ffc;
 }
 

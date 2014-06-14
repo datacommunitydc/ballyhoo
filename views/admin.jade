@@ -5,10 +5,10 @@ extends layout
 block content
   .container.container--admin
     .row#contentrow
-      div.queuehidden
-          a(href="/admin")
-            p New announcements available -- reload!
       .col-sm-9
+        div.queuehidden
+            a(href="/admin")
+              p New announcements available -- reload!
         - var i = -3;
             while i <= announcements.length
               - i += 3;
