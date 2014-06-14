@@ -1,5 +1,17 @@
+
 .announcement {
+  padding: 10px;
+  border: 2px;
+  border-style: solid;
+  border-color: gray;
+  position: relative;
+  max-width: 370px;
+  height:236px;
+  box-shadow: 1px 1px gray;
+  overflow: hidden; 
+  zfloat:left;
   margin: 15px auto;
+  background-color: white;
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
@@ -8,11 +20,114 @@
   }
 }
 
-  .announcement .speaker_name {
-    font-size: 2em;
-  }
+/*.announcement a {
+  text-overflow: ellipsis;
+}*/
+.announcement img {
+  float:left;
+  zwidth: auto;
 
-  .announcement .speaker_message {
-    overflow-y: scroll;
-  }
+  zmax-width:35%;
+  width: auto;
+  zheight:auto;
+  height:55%;
+
+  zmax-width: 35%;
+  zmax-height: 100%;
+  zheight:60%;
+  zheight:139px;
+
+  position: absolute;
+  zbottom:17.5%;
+  bottom:18%;
+  top:25%;
+  padding:1%;
+
+}
+
+.announcement .speaker_message {
+  zbackground-color: #428bca;
+  zbackground-color: white;
+
+  display: block;
+
+  zborder: solid 1px  black;
+  color:#777;
+
+  position: absolute;
+  bottom:17%;
+  right:2%;
+  zheight:60%;
+  height:139px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  vertical-align: center;
+  zborder-left: solid 1px #428bca;
+
+  margin-bottom: 0px;
+  padding:3%;
+  padding-left: 15px;
+}
+
+.ann_comps {
+  display: table;
+  zmargin: 0 auto;
+}
+.ann_comps.url {
+  word-break: break-all;
+  opacity: 0.7;
+}
+
+.announcement .speaker_name  {
+  zfloat: left;
+  margin:0px;
+  width: 100%;
+  zbackground-color: blue;
+  zcolor:white;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: solid 1px #428bca;
+}
+
+.announcement .speaker_url {
+  position: absolute;
+  bottom: 1%;
+  max-height: 25px;
+  overflow: hidden;
+  width:95%;
+  display: block;
+  text-align: center;
+  font-size: 130%;
+  border-top: solid 1px #428bca;
+  white-space: nowrap;
+
+}
+
+.announcement img {
+  zborder: solid 0px white;
+  border-radius: 5px;
+}
+
+.announcement .speaker_name {
+  font-size: 2em;
+}
+
+.announcement .speaker_message {
+  overflow-y: scroll;
+}
+
+.announcement .profile-circular {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  display: block;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  box-shadow: 0 1px 2px #000;
+  right: 5%;
+  top: 2%;
+  position: absolute;
+}
 

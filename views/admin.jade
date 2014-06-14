@@ -22,12 +22,13 @@ block content
                       - var ann_class = 'queued'
                       - var toggle_to = 'visible'
                     div(class=ann_class, class='announcement')
-                      img.admin.ann_comps(src="#{ann.image_url}")
-                      p.ann_comps= ann.username
+                      //img.admin.ann_comps(src="#{ann.image_url}")
+                      h5.ann_comps= ann.username
                       p.ann_comps= ann.announcement
-                      p.ann_comps= ann.url
+                      p.ann_comps.url= ann.url
                       a(href="/admin?toggle=#{ann._id}&to=#{toggle_to}")
                         span.boxlink
+                      div.profile-circular(style="background-image: url(#{ann.image_url});")
 
       .col-sm-3.sidebar
         p Change all:
