@@ -5,7 +5,7 @@ html {
     padding: 0;
 }
 body {
-  padding: 70px;
+  padding: 70px 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
   zbackground-color: #f8f8f8;
@@ -103,7 +103,6 @@ overflow: hidden;
 
 .announcement .speaker_name  {
   zfloat: left;
-  font-size: 200%;
   margin:0px;
   width: 100%;
   zbackground-color: blue;

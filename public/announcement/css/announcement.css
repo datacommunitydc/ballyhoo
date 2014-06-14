@@ -1,0 +1,18 @@
+.announcement {
+  margin: 15px auto;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .announcement {
+    max-width: 300px;
+  }
+}
+
+  .announcement .speaker_name {
+    font-size: 2em;
+  }
+
+  .announcement .speaker_message {
+    overflow-y: scroll;
+  }
+
