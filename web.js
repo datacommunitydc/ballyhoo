@@ -68,7 +68,7 @@ app.get('/about', function(req, res) {
   res.render('about', {title: title, page: "about", announceuri: announceUri});
 });
 
-var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is\
+var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is \
 validated, a %s organizer can make it visible during the event. This is what it'll look like:\n\
 \n\
 [Your Photo Here]\n\
