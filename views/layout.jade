@@ -23,8 +23,13 @@ html
     script.
       var socket = io.connect("#{host}");
       socket.on('reload', function (data) {
-        console.log("reloading per server: " + data);
-        window.location.reload();
+        //console.log("current URL: " + document.URL + " -- " + document.URL.match("toggle"))
+        if (document.URL.match("toggle")) {
+          console.log("ignoring a reload request becuase I'm in the middle of a toggle!")
+        } else {
+          console.log("reloading per server: " + data);
+          window.location.reload();
+        }   
       });
       socket.on('queued', function(data) {
         console.log("unhiding new queued announcements message per server: " + data);
