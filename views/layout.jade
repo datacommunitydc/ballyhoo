@@ -16,9 +16,8 @@ html
 
       // Configure the Keen object with your Project ID and (optional) access keys.
       Keen.configure({
-          projectId: "539cb50500111c538c000011",
-          writeKey: "43c17060b0265beb0a0d447b9b0318a5bf38463dd3aa702e0169704964368968b13ae4ce9d8ac33f6e21d5e3b1d7b9fbba39f9ecb0fd5abdd42f268de1437ad763befa9f59b9b2d2443eca223f5112e3d663c9175f415dcfa3c116052962d90537c95f8ca4b9944f39b111e3fa80f749", // required for sending events
-          readKey: "your_read_key"    // required for doing analysis
+          projectId: "#{keenProjID}",
+          writeKey: "#{keenWriteKey}"
       });
     script.
       var socket = io.connect("#{host}");

@@ -5,6 +5,37 @@ var http = require('http');
 var path = require('path');
 
 var logfmt = require("logfmt");
+var keenReadKey = process.env.KEEN_READ_KEY
+var keenWriteKey = process.env.KEEN_WRITE_KEY
+var keenProjID = process.env.KEEN_PROJ_ID
+var keenClass = require('keen.io');
+var keen = keenClass.configure({
+    projectId: keenProjID,
+    writeKey: keenWriteKey,
+    readKey: keenReadKey
+});
+keen.addEvent("startup");
+var keenCountQuery = new keenClass.Query("count", {
+  event_collection: "visit_ann_url",
+  group_by: "url",
+  timeframe: "this_7_days",
+  timezone: "-14400"
+});
+var keenCount;
+function keenCountFn() {
+  keen.run(keenCountQuery, function(err, response) {
+    if (err) return console.log(err);
+    keenCount = {};
+    var rrLen = response.result.length;
+    for (var r=0; r < rrLen; r++) {
+      keenCount[response.result[r].url] = response.result[r].result;
+    }
+    console.log("clickthroughs: " + JSON.stringify(keenCount));
+  })
+}
+// run once at startup...
+keenCountFn();
+//var keenInterval = setInterval(keenCountFn, 1000*60*60); // get count hourly
 
 var mongo = require('mongodb');
 
@@ -52,19 +83,30 @@ io.set('log level', 2);
 var announcements_db; // for scoping?
 
 app.get('/', function(req, res) {
+  keenCountFn(); // with a little luck, this'll be done in time for a correct number...
   announcements_db.find({status: 'visible'},
                         {sort: [['modified', -1]]}).toArray(function(err, docs) {
+    keen.addEvent("render_page", {"page": "/", "num_docs": docs.length});
+    // add counts to docs, by URL
+    var arrayLen = docs.length;
+    for (var d = 0; d < arrayLen; d++) {
+      docs[d].clickthroughs = keenCount[docs[d].url] || "0";
+    }
     res.render('index', { announcements: docs,
       messages: req.flash('info'), 
       warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
       title: title,
-      announceuri: announceUri});
+      announceuri: announceUri,
+      keenProjID: keenProjID,
+      keenWriteKey: keenWriteKey
+    });
   });
   
 });
 
 app.get('/about', function(req, res) {
+  keen.addEvent("render_page", {"page": "/about"})
   res.render('about', {title: title, page: "about", announceuri: announceUri});
 });
 
@@ -118,6 +160,8 @@ app.post('/email', function(req, res) {
       image_url: image_url,
       status: "unverified"
     };
+    keen.addEvent("received_email", annc)
+
     // write to the db
     announcements_db.insert(annc, function(er,rs) {
         if(er) throw er;
@@ -171,6 +215,8 @@ app.get('/validate', function(req, res) {
         console.log("invalid validation id!");
       } else {
         console.log("queueing " + idstr);
+        keen.addEvent("validate", {"id": idstr})
+
         announcements_db.update({ _id: idstr }, 
           {$set: {status: "queued"}}, 
           function(err, doc) {
@@ -207,8 +253,11 @@ function render_admin(req, res) {
 }
 
 app.get('/admin', auth, function(req, res) {
+  keen.addEvent("render_page", {"page": "/admin"})
+
   // first, if we have a toggle, do that
   if (req.query.toggle) {
+    keen.addEvent("toggle", req.query);
     console.log("Toggling element " + req.query.toggle + " to " + req.query.to);
     announcements_db.update({_id: mongo.ObjectID.createFromHexString(req.query.toggle)}, 
       {$set: {status: req.query.to, modified: Date.now()}}, 
@@ -227,6 +276,7 @@ app.get('/adminbtn', auth, function(req, res) {
   // use params to decide what to do, then always redirect back to /admin
   if (req.query.from.match("unverified|queued|visible|archived") && 
       req.query.to.match("queued|visible|archived|deleted")) {
+    keen.addEvent("admin_button", req.query)
     console.log("Moving all " + req.query.from + " announcements to " + req.query.to);
     // "deleted" isn't actually deleted, we just don't allow you to move anything from it
     announcements_db.update({status: req.query.from},
