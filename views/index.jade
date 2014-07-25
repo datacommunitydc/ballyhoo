@@ -29,7 +29,7 @@ block content
                         img.admin.ann_comps(src="#{ann.image_url}")
                         p.ann_comps.speaker_name= ann.username
                       p.ann_comps.speaker_message= ann.announcement
-                      a(href="#{ann.url}" title="#{ann.clickthroughs} clickthroughs" onclick="return Keen.trackExternalLink(this, 'visit_ann_url', {'id' : '#{ann._id}', 'url' : '#{ann.url}'});")
+                      a(href="#{ann.url}" title="#{ann.clickthroughs} clickthroughs" onclick="return client.trackExternalLink(event, 'visit_ann_url', {'id' : '#{ann._id}', 'url' : '#{ann.url}'});")
                         p.ann_comps.speaker_url= ann.url
   
 
