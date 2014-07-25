@@ -31,6 +31,7 @@ Each Meetup needs to separately configure and deploy their own instance of Bally
 * Go to the Postmark admin screens from Heroku. Set the Inbound Hook to go to your app: `appname.herokuapp.com/email`. Create a Sender Signature with an appropriate email address, which might be the same as the Meetup user's email address. You'll need to validate that email address, and you may want to set up other authentication measures, as Postmark recommends.
 * Back in the Heroku admin page, add additional [config/environment variables](https://devcenter.heroku.com/articles/config-vars). Set MEETUP_NAME to be the name of your Meetup group. Set ADMIN_EMAIL to be an address for mail sent to Ballyhoo that doesn't look like an announcement to be forwarded to -- likely your personal email address; it won't be visible to users. Optionally, set ADMIN_PW -- the password will be empty if not specified. 
 * Only now, change the forwarding on your email address to point to the _bixhexstring@inbound.postmarkapp.com_ address that Postmark provides, aka POSTMARK_INBOUND_ADDRESS.
+* Set up a [Keen.io](http://keen.io) account. Set the KEEN_PROJ_ID, KEEN_READ_KEY and KEEN_WRITE_KEY accordingly.
 * That should be it! The admin login is `admin`, with the password you specified as an environment variable.
 
 Developer Notes
@@ -54,3 +55,4 @@ Ballyhood is written in Node.js/Javascript. Useful packages include:
 * connect-flash -- flash/warning messages to the user
 * socket.io -- websockets library for triggered reloads
 * postmark -- library to make sending email with Postmark easier
+* keen.io -- server-side library for Keen.io
