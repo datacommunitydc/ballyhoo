@@ -206,24 +206,24 @@ app.get('/logout', function(req, res){
 // 2. set up a flash message
 // 3. redirect to /
 app.post('/submit', function(req, res) {
-  console.log(req._json.results);
+  console.log(req.body);
   var annc = {
-    username: req.membername,
-    announcement: req.announcement,
-    url: req.url,
-    userurl: req.memberurl,
-    image_url: req.memberphotourl,
+    username: req.body.membername,
+    announcement: req.body.announcement,
+    url: req.body.url,
+    userurl: req.body.memberurl,
+    image_url: req.body.memberphotourl,
     status: "queued"
   };
   keen.addEvent("announcement_submitted", annc);
 
   announcements_db.insert(annc, function(er,rs) {
-    if (err || doc == null) {
+    if(er) {
       req.flash('warning', 'Announce queueing failed?!');
-      console.log("failed! " + err + doc);
+      console.log("failed! " + er + rs);
     } else {
       req.flash('info', 'Announcement queued! Next step: Attend the Meetup and say your piece!');
-      io.sockets.emit('queued', req.query.id + " to queued");
+      io.sockets.emit('queued', rs[0]._id + " to queued");
       console.log("succeeded");
     }
   });
@@ -238,8 +238,7 @@ function render_admin(req, res) {
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
       host: req.protocol + '://' + req.host, // for socket connection
       page: "admin",
-      title: title,
-      announceuri: announceUri});
+      title: title});
   });
 }
 
