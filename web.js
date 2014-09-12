@@ -1,8 +1,13 @@
 // web.js
 
 var express = require("express");
+var passport = require('passport');
+var MeetupStrategy = require('passport-meetup').Strategy;
 var http = require('http');
 var path = require('path');
+
+var MEETUP_KEY = process.env.MEETUP_KEY || console.log("no MEETUP_KEY!");
+var MEETUP_SECRET = process.env.MEETUP_SECRET || console.log("no MEETUP_SECRET");
 
 var logfmt = require("logfmt");
 var keenReadKey = process.env.KEEN_READ_KEY
@@ -42,15 +47,53 @@ var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || "MONGOLAB_URI undefined";
 
 var meetupName = process.env.MEETUP_NAME || "MEETUP_NAME undefined";
-var announceUri = process.env.MAKE_ANNOUNCEMENT_URI || "MAKE_ANNOUNCEMENT_URI undefined";
+//var announceUri = process.env.MAKE_ANNOUNCEMENT_URI || "MAKE_ANNOUNCEMENT_URI undefined";
 var appName = "Ballyhoo";
 var title = appName + ": " + meetupName;
 
-// to send email, including validation email, this must be a Postmark Sender Signature
-var adminEmail = process.env.ADMIN_EMAIL || "ADMIN_EMAIL undefined";
+// // to send email, including validation email, this must be a Postmark Sender Signature
+// var adminEmail = process.env.ADMIN_EMAIL || "ADMIN_EMAIL undefined";
 
-var postmarkKey = process.env.POSTMARK_API_KEY || "POSTMARK_API_KEY undefined";
-var postmark = require("postmark")(postmarkKey);
+// var postmarkKey = process.env.POSTMARK_API_KEY || "POSTMARK_API_KEY undefined";
+// var postmark = require("postmark")(postmarkKey);
+
+// Passport session setup.
+//   To support persistent login sessions, Passport needs to be able to
+//   serialize users into and deserialize users out of the session.  Typically,
+//   this will be as simple as storing the user ID when serializing, and finding
+//   the user by ID when deserializing.  However, since this example does not
+//   have a database of user records, the complete Meetup profile is
+//   serialized and deserialized.
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+// Use the MeetupStrategy within Passport.
+//   Strategies in passport require a `verify` function, which accept
+//   credentials (in this case, a token, tokenSecret, and Meetup profile), and
+//   invoke a callback with a user object.
+passport.use(new MeetupStrategy({
+    consumerKey: MEETUP_KEY,
+    consumerSecret: MEETUP_SECRET,
+    callbackURL: "http://127.0.0.1:3000/auth/meetup/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      
+      // To keep the example simple, the user's Meetup profile is returned to
+      // represent the logged-in user.  In a typical application, you would want
+      // to associate the Meetup account with a user record in your database,
+      // and return that user instead.
+      return done(null, profile);
+    });
+  }
+));
+
 
 var app = express();
 var flash = require('connect-flash');
@@ -70,6 +113,10 @@ app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(flash());
 app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000 }}));
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
@@ -97,7 +144,7 @@ app.get('/', function(req, res) {
       warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
       title: title,
-      announceuri: announceUri,
+      //announceuri: announceUri,
       keenProjID: keenProjID,
       keenWriteKey: keenWriteKey
     });
@@ -107,137 +154,81 @@ app.get('/', function(req, res) {
 
 app.get('/about', function(req, res) {
   keen.addEvent("render_page", {"page": "/about"})
-  res.render('about', {title: title, page: "about", announceuri: announceUri});
+  res.render('about', {title: title, page: "about"});
 });
 
-var validate_template = "Your Ballyhoo announcement needs to be validated. Once it is \
-validated, a %s organizer can make it visible during the event. This is what it'll look like:\n\
-\n\
-[Your Photo Here]\n\
-%s\n\
-%s\n\
-%s\n\
-\n\
-If that looks fine, click here:\n\
-\n\
-%s\n\
-\n\
-If it's bad, ignore this message.\n\
-\n\
-Thank you!\n\
-\n\
-Ballyhoo\n\
-";
-
-app.post('/email', function(req, res) {
-  // get username and announcement from the Subject
-  // get userurl from the email body
-  // get url from the email body
-  // get email from the Reply-To
-  // get image_url from the HTML body, looking for "photos/member" in a URL, replacing "thumb_" w/ "member_"
-
-  var subj_re = /(.+) sent you a message: (.+)/;
-  var end_message_re = /[\s\S]*Member since/; // match all lines up to here; .* doesn't cross lines!
-  var url_re = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-  var userurl_re = new RegExp("http://www.meetup.com/[^/]+/members/\\d+", "i");
-  var photo_re = new RegExp("http://photo[^.]*.meetupstatic.com/photos/member/[^.]+.jpeg", "i");
-  
-  var subj_match = req.body.Subject.match(subj_re);
-  if (subj_match) {
-    var photo_match = req.body.HtmlBody.match(photo_re);
-    var image_url = photo_match ? photo_match[0].replace("thumb_", "member_") : "/yellout.png";
-
-    // extract any URL from before the end of the message; or "" if none provided
-    var url_match = req.body.TextBody.match(end_message_re)[0].match(url_re);
-    var url_str = url_match ? url_match[0] : "";
-
-    var annc = {
-      username: subj_match[1],
-      announcement: subj_match[2],
-      url: url_str,
-      email: req.body.ReplyTo,
-      userurl: req.body.TextBody.match(userurl_re)[0],
-      image_url: image_url,
-      status: "unverified"
-    };
-    keen.addEvent("received_email", annc)
-
-    // write to the db
-    announcements_db.insert(annc, function(er,rs) {
-        if(er) throw er;
-
-        // send notification email to user
-        postmark.send({
-          "From": adminEmail,
-          "To": req.body.ReplyTo,
-          "Subject": "Verify your Ballyhoo announcement: " + subj_match[2],
-          "TextBody": util.format(validate_template, meetupName, 
-            subj_match[1], subj_match[2], url_str,
-            req.protocol + '://' + req.host + "/validate?id=" + rs[0]._id
-            )
-          }, function(error, success) {
-            if(error) {
-                console.error("Unable to send validate message: " + error.message);
-                return;
-            }
-            console.log("Sent validate message.");
-        })
-    });
-    console.log("Inserted announcement from ", annc.username);
-  } else {
-    // forward
-    postmark.send({
-        "From": req.body.From, 
-        "To": adminEmail, 
-        "Subject": req.body.Subject, 
-        "TextBody": req.body.TextBody
-      }, function(error, success) {
-          if(error) {
-              console.error("Unable to send via postmark: " + error.message);
-              return;
-          }
-          console.log("Received email, but doesn't seem to be an announcement: ", req.body.Subject);
-      });
-  };
-  
-  res.send(200);
+app.get('/announce', ensureAuthenticated, function(req, res) {
+  keen.addEvent("render_page", {"page": "/announce"})
+  var user_info = req.user._json.results[0];
+  console.log(user_info);
+  res.render('announce', { 
+    title: title, page: "announce", 
+    membername: user_info.name,
+    memberurl: user_info.link,
+    memberphotourl: user_info.photo.photo_link,
+  });
 });
 
-app.get('/validate', function(req, res) {
-  // if we don't have an id, redirect to / with an error message
-  // if we have a valid id, validate it, then redirect to / with a success message
-  // if we don't have a valid id, redirect to / with an error message
-  if (req.query.id) {
-    var idstr = mongo.ObjectID.createFromHexString(req.query.id);
-    announcements_db.findOne({ _id: idstr }, function(err, doc) {
-      if (err || doc == null) {
-        req.flash('warning', 'Invalid validation ID!');
-        console.log("invalid validation id!");
-      } else {
-        console.log("queueing " + idstr);
-        keen.addEvent("validate", {"id": idstr})
+app.get('/login', function(req, res){
+  res.render('login', {title: title, page: "login", user: req.user });
+});
 
-        announcements_db.update({ _id: idstr }, 
-          {$set: {status: "queued"}}, 
-          function(err, doc) {
-            if (err || doc == null) {
-              req.flash('warning', 'Announce queueing failed?!');
-              console.log("failed! " + err + doc);
-            } else {
-              req.flash('info', 'Announcement queued successfully!');
-              io.sockets.emit('queued', req.query.id + " to queued");
-              console.log("succeeded")
-            }
-          }
-        );
-      }
-      res.redirect("/");
-    });
-  } else {
-    console.log("warning");
-    req.flash('warning', 'Invalid validation request?!');
-    res.redirect("/");
+// GET /auth/meetup
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Meetup authentication will involve redirecting
+//   the user to meetup.com.  After authorization, Meetup will redirect the user
+//   back to this application at /auth/meetup/callback
+app.get('/auth/meetup',
+  passport.authenticate('meetup'),
+  function(req, res){
+    // The request will be redirected to Meetup for authentication, so this
+    // function will not be called.
+  });
+
+// GET /auth/meetup/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/meetup/callback', 
+  passport.authenticate('meetup', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/announce');
+  });
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+// this receives the form for the announcement.
+// 1. validate and store it
+// 2. set up a flash message
+// 3. redirect to /
+app.post('/submit', function(req, res) {
+  console.log(req._json.results);
+  var annc = {
+    username: req.membername,
+    announcement: req.announcement,
+    url: req.url,
+    userurl: req.memberurl,
+    image_url: req.memberphotourl,
+    status: "queued"
   };
+  keen.addEvent("announcement_submitted", annc);
+
+  announcements_db.insert(annc, function(er,rs) {
+    if (err || doc == null) {
+      req.flash('warning', 'Announce queueing failed?!');
+      console.log("failed! " + err + doc);
+    } else {
+      req.flash('info', 'Announcement queued! Next step: Attend the Meetup and say your piece!');
+      io.sockets.emit('queued', req.query.id + " to queued");
+      console.log("succeeded");
+    }
+  });
+  
+  res.redirect("/");
 });
 
 function render_admin(req, res) {
@@ -293,6 +284,16 @@ app.get('/adminbtn', auth, function(req, res) {
     console.warning("Unexpected query ignored: " + req.query)
   }
 });
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
 
 mongo.Db.connect(mongoUri, function (err, db) {
 	announcements_db = db.collection('announcements');

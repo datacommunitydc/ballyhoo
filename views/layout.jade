@@ -47,7 +47,9 @@ html
       div.collapse.navbar-collapse.navbar-right#bs-example-navbar-collapse-1
         ul.nav.navbar-nav
           li
-            button(class="btn btn-danger nav__announce" target="_blank" onclick="window.open('#{announceuri}', '_blank');") Announce
+            //button(class="btn btn-danger nav__announce" target="_blank" onclick="window.open('#{announceuri}', '_blank');") Announce
+            button(class="btn btn-danger nav__announce" onclick="window.location.href='/announce'") Announce
+            //a(href="/submit") Announce
           li(class=page === "admin" ? "active" : undefined)
             a(href="/admin") Admin
           li(class=page === "about" ? "active" : undefined)

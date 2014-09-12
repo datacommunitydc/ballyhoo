@@ -1,0 +1,24 @@
+extends layout
+
+// a form, partially pre-populated by the server, with the message to queue
+block content
+  p.
+    Enter your announcement to be queued!
+  div.announceform
+    form(name="annform", action="/submit", method="post")
+      p
+        label(for="membername") Your Name
+          input(type="text", name="membername", value="#{membername}", disabled) 
+      p
+        label(for="memberurl") Meetup Account URL
+          input(type="text", name="memberurl", value="#{memberurl}", disabled)
+      p
+        label(for="memberphotourl") Meetup Photo URL
+          input(type="text", name="memberphotourl", value="#{memberphotourl}", disabled)
+      p
+        label(for="announcement") Announcement (80 chars or less)
+          input(type="text", name="announcement", maxlength=80) 
+      p
+        label(for="url") URL (optional)
+          input(type="text", name="url")
+      input(type="submit", value="Queue") 
