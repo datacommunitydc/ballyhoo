@@ -1,5 +1,3 @@
-// web.js
-
 var express = require("express");
 var passport = require('passport');
 var MeetupStrategy = require('passport-meetup').Strategy;
@@ -47,15 +45,8 @@ var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || "MONGOLAB_URI undefined";
 
 var meetupName = process.env.MEETUP_NAME || "MEETUP_NAME undefined";
-//var announceUri = process.env.MAKE_ANNOUNCEMENT_URI || "MAKE_ANNOUNCEMENT_URI undefined";
 var appName = "Ballyhoo";
 var title = appName + ": " + meetupName;
-
-// // to send email, including validation email, this must be a Postmark Sender Signature
-// var adminEmail = process.env.ADMIN_EMAIL || "ADMIN_EMAIL undefined";
-
-// var postmarkKey = process.env.POSTMARK_API_KEY || "POSTMARK_API_KEY undefined";
-// var postmark = require("postmark")(postmarkKey);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -207,6 +198,7 @@ app.get('/logout', function(req, res){
 // 3. redirect to /
 app.post('/submit', function(req, res) {
   console.log(req.body);
+  // TODO: validation!
   var annc = {
     username: req.body.membername,
     announcement: req.body.announcement,
