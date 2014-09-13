@@ -2,10 +2,10 @@ extends layout
 
 // a form, partially pre-populated by the server, with the message to queue
 block content
-  p.
-    Enter your announcement to be queued!
   form(name="annform", action="/submit", method="post")
     div(class='annform')
+      p.
+        Enter your announcement to be queued!
       div(class='announcement')
         img.admin.ann_comps(src="#{memberphotourl}")
         p.ann_comps.speaker_name= membername

@@ -58,6 +58,7 @@ span.boxlink {
 
 .annform {
   width: 400px;
+  padding-left: 40px;
 }
 .submitbtn {
 
@@ -65,4 +66,9 @@ span.boxlink {
 
 .loginbox {
   font-size: 200%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 3in;
+  text-align: center;
+  border: dotted;
 }
