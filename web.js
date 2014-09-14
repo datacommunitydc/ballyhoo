@@ -156,7 +156,7 @@ app.get('/announce', ensureAuthenticated, function(req, res) {
     title: title, page: "announce", 
     membername: user_info.name,
     memberurl: user_info.link,
-    memberphotourl: user_info.photo.photo_link,
+    memberphotourl: user_info.photo.photo_link || "/yellout.png",
   });
 });
 
