@@ -13,7 +13,7 @@ block content
         input(type="hidden", name="memberurl", value="#{memberurl}")
         input(type="hidden", name="memberphotourl", value="#{memberphotourl}")
         p.ann_comps.speaker_message
-          textarea(name="announcement", placeholder="Announcement (80 chars or less)", rows=5, cols=25, wrap="soft", required, maxlength=80) 
+          textarea(name="announcement", placeholder="Announcement (140 chars or less)", rows=6, cols=24, wrap="soft", required, maxlength=140) 
         p.ann_comps.speaker_url
           input(type="url", name="url", placeholder="URL (optional)", size=35)
       input.submitbtn(type="submit", value="Queue") 
