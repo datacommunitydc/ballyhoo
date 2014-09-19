@@ -1,16 +1,18 @@
 extends layout
 
 block content
-  -if (messages != '')
-    div.alert.alert-success.alert-dismissable
-      button.close(type="button", data-dismiss="alert", aria-hidden="true")
-        | &times;
-      p= messages
-  -if (warnings != '')
-    div.alert.alert-danger.alert-dismissable
-      button.close(type="button", data-dismiss="alert", aria-hidden="true")
-        | &times;
-      p= warnings
+  -for message in messages
+    -if (message != '')
+      div.alert.alert-success.alert-dismissable
+        button.close(type="button", data-dismiss="alert", aria-hidden="true")
+          | &times;
+        p= message
+  -for warning in warnings
+    -if (warning != '')
+      div.alert.alert-danger.alert-dismissable
+        button.close(type="button", data-dismiss="alert", aria-hidden="true")
+          | &times;
+        p= warning
 
   .container
     .row
@@ -31,5 +33,5 @@ block content
                       p.ann_comps.speaker_message= ann.announcement
                       a(href="#{ann.url}" title="#{ann.clickthroughs} clickthroughs" onclick="return client.trackExternalLink(event, 'visit_ann_url', {'id' : '#{ann._id}', 'url' : '#{ann.url}'});")
                         p.ann_comps.speaker_url= ann.url
-  
+
 
