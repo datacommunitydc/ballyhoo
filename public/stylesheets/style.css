@@ -77,3 +77,18 @@ img#logo {
   float: right;
   padding: 10px;
 }
+
+img#navlogo {
+  float: left;
+  padding-right: 5px;
+}
+
+.navbar-brand {
+  width: 400px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+p#navtitle {
+  margin-top: 14px;
+}
