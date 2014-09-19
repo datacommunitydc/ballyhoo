@@ -75,7 +75,7 @@ passport.use(new MeetupStrategy({
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
+
       // To keep the example simple, the user's Meetup profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the Meetup account with a user record in your database,
@@ -102,12 +102,12 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(flash());
 app.use(express.session({secret: "MQ4MNOIq1Uv3dVIuxmvi", cookie: { maxAge: 60000 }}));
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
@@ -130,8 +130,9 @@ app.get('/', function(req, res) {
     for (var d = 0; d < arrayLen; d++) {
       docs[d].clickthroughs = keenCount[docs[d].url] || "0";
     }
-    res.render('index', { announcements: docs,
-      messages: req.flash('info'), 
+    res.render('index', {
+      announcements: docs,
+      messages: req.flash('info'),
       warnings: req.flash('warning'),
       host: req.protocol + '://' + req.host, // for socket connection
       title: title,
@@ -140,7 +141,7 @@ app.get('/', function(req, res) {
       keenWriteKey: keenWriteKey
     });
   });
-  
+
 });
 
 app.get('/about', function(req, res) {
@@ -152,8 +153,8 @@ app.get('/announce', ensureAuthenticated, function(req, res) {
   keen.addEvent("render_page", {"page": "/announce"})
   var user_info = req.user._json.results[0];
   console.log(user_info);
-  res.render('announce', { 
-    title: title, page: "announce", 
+  res.render('announce', {
+    title: title, page: "announce",
     membername: user_info.name,
     memberurl: user_info.link,
     memberphotourl: user_info.photo.photo_link || "/yellout.png",
@@ -181,7 +182,7 @@ app.get('/auth/meetup',
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/meetup/callback', 
+app.get('/auth/meetup/callback',
   passport.authenticate('meetup', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/announce');
@@ -218,15 +219,15 @@ app.post('/submit', function(req, res) {
       io.sockets.emit('queued', rs[0]._id + " to queued");
       console.log("succeeded");
     }
+    res.redirect("/");
   });
-  
-  res.redirect("/");
+
 });
 
 function render_admin(req, res) {
   // TODO: move the filter into the find(), and use a regex instead of indexOf
   announcements_db.find().toArray(function(err, docs) {
-    res.render('admin', { announcements: docs.filter(function(ann) { 
+    res.render('admin', { announcements: docs.filter(function(ann) {
       return ['queued', 'visible'].indexOf(ann.status) > -1; }),
       host: req.protocol + '://' + req.host, // for socket connection
       page: "admin",
@@ -241,8 +242,8 @@ app.get('/admin', auth, function(req, res) {
   if (req.query.toggle) {
     keen.addEvent("toggle", req.query);
     console.log("Toggling element " + req.query.toggle + " to " + req.query.to);
-    announcements_db.update({_id: mongo.ObjectID.createFromHexString(req.query.toggle)}, 
-      {$set: {status: req.query.to, modified: Date.now()}}, 
+    announcements_db.update({_id: mongo.ObjectID.createFromHexString(req.query.toggle)},
+      {$set: {status: req.query.to, modified: Date.now()}},
       function(err, doc) {
         if (err) throw(err);
         io.sockets.emit('reload', req.query.toggle + " to " + req.query.to);
@@ -251,12 +252,12 @@ app.get('/admin', auth, function(req, res) {
   } else {
     render_admin(req, res);
   }
-  
+
 });
 
 app.get('/adminbtn', auth, function(req, res) {
   // use params to decide what to do, then always redirect back to /admin
-  if (req.query.from.match("unverified|queued|visible|archived") && 
+  if (req.query.from.match("unverified|queued|visible|archived") &&
       req.query.to.match("queued|visible|archived|deleted")) {
     keen.addEvent("admin_button", req.query)
     console.log("Moving all " + req.query.from + " announcements to " + req.query.to);
