@@ -17,7 +17,8 @@ opportunities, then disappear before actual connections are made? Then Ballyhoo 
 2. During the event, as people make announcements aloud, an event organizer can promote queued announcements to make them visible. Visible announcements can be projected onto a big screen for users to see. Updates happen in real time!
 4. Announcements have the name, URL, and text, plus a photo of the announcer. It's easy to follow up now!
 
-Ballyhoo design and coding is led by Harlan Harris, with contributions by Devin Castro and Mike Bullen. 
+Ballyhoo design and coding is led by Harlan Harris, with contributions by Devin Castro, Mike Bullen,
+and Dan Paz-Soldan. 
 
 Ballyhoo is Open Source Software, and is released under an MIT License (see LICENSE). The Ballyhoo logo is from the public domain, via [openclipart](http://openclipart.org/detail/75487/yell-out-by-rgesthuizen).
 
